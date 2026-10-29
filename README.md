@@ -199,6 +199,32 @@ The current repository includes tested, dependency-light components that make th
 
 These components define interfaces and evaluation behavior. They are not the full AMTDAN training implementation and cannot reproduce the reported aggregate results without the withheld architecture, governed data, split manifests, and model artifacts.
 
+### Installation
+
+The public package requires Python 3.10 or later and has no runtime dependencies.
+
+```bash
+git clone https://github.com/ZhWenPrism/AMTDAN.git
+cd AMTDAN
+python -m pip install -e .
+```
+
+### Ordinal evaluation
+
+```python
+from amtdan.evaluation import ordinal_metrics
+
+metrics = ordinal_metrics([0, 1, 2, 3, 4], [0, 2, 2, 2, 4])
+print(metrics.accuracy)
+print(metrics.mean_absolute_grade_error)
+```
+
+Run the public-utility tests from the repository root:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
 ## Repository layout
 
 ```text
