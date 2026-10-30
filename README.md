@@ -122,13 +122,13 @@ Task-specific prediction heads retain the identity of all 17 conditions. Multi-t
 
 ## Model design principles
 
-1. **Multi-scale perception** — different receptive fields preserve both local structural detail and global cardiac context.
-2. **Quality-aware attention** — visual evidence is weighted according to examination content and image quality.
-3. **Anatomical structure** — graph propagation encodes relationships among cardiac regions instead of relying only on generic feature fusion.
-4. **Multimodal alignment** — clinical measurements are projected into the same representational space as graph-derived visual features.
-5. **Task-specific outputs** — every condition retains its own five-level probability distribution.
-6. **Ordinal evaluation** — adjacent-grade and distant-grade errors are distinguished during analysis.
-7. **Missing-modality transparency** — availability and quality states are explicit inputs to the fusion policy.
+1. **Multi-scale perception**: different receptive fields preserve both local structural detail and global cardiac context.
+2. **Quality-aware attention**: visual evidence is weighted according to examination content and image quality.
+3. **Anatomical structure**: graph propagation encodes relationships among cardiac regions instead of relying only on generic feature fusion.
+4. **Multimodal alignment**: clinical measurements are projected into the same representational space as graph-derived visual features.
+5. **Task-specific outputs**: every condition retains its own five-level probability distribution.
+6. **Ordinal evaluation**: adjacent-grade and distant-grade errors are distinguished during analysis.
+7. **Missing-modality transparency**: availability and quality states are explicit inputs to the fusion policy.
 
 ## Reported results
 
@@ -175,12 +175,12 @@ Performance should be stratified by site, device family, view, visual-quality gr
 
 AMTDAN uses an explicit error taxonomy so that different failure mechanisms are not merged into one metric:
 
-- **Visual-quality failure** — performance changes with image quality, view, or device family.
-- **Missing-modality failure** — predictions degrade when one branch is unavailable or poorly represented.
-- **Ordinal near miss** — the predicted grade is adjacent to the reference.
-- **Ordinal severe miss** — the prediction differs by several severity levels.
-- **Domain shift** — performance or calibration changes across sites or devices.
-- **Task imbalance** — rare conditions or severity levels have unstable recall and precision.
+- **Visual-quality failure**: performance changes with image quality, view, or device family.
+- **Missing-modality failure**: predictions degrade when one branch is unavailable or poorly represented.
+- **Ordinal near miss**: the predicted grade is adjacent to the reference.
+- **Ordinal severe miss**: the prediction differs by several severity levels.
+- **Domain shift**: performance or calibration changes across sites or devices.
+- **Task imbalance**: rare conditions or severity levels have unstable recall and precision.
 
 High-confidence errors and distant-grade errors require case-level review. The review record should include task identity, full probability vector, modality state, visual-quality flags, graph or attention diagnostics when available, class support, and label-review status. Changes made after failure analysis must be evaluated on the original frozen split to avoid converting error inspection into test-set tuning.
 
@@ -280,8 +280,6 @@ Future implementation release is gated on a frozen task registry, verified artif
 
 ## Scope and responsible use
 
-AMTDAN is intended for research discussion, protocol development, and future reproducibility work. It is not approved for diagnosis, triage, treatment selection, or autonomous report generation. The reported aggregate metrics do not establish portability across hospitals, devices, populations, or annotation practices.
+The reported aggregate metrics do not establish portability across hospitals, devices, populations, or annotation practices.
 
-Five-level labels may reflect local reporting conventions, and some tasks may have limited examples at the extreme grades. Visual quality, missing modalities, class imbalance, and domain shift can change both accuracy and calibration. Any clinical investigation must include independent target-site validation, prospective workflow assessment, and human review of all outputs.
-
-> **Research-preview boundary:** public figures and summary values document the current project state. They do not substitute for executable reproduction, external validation, or prospective clinical evaluation.
+Five-level labels may reflect local reporting conventions, and some tasks may have limited examples at the extreme grades. Visual quality, missing modalities, class imbalance, and domain shift can change both accuracy and calibration.
