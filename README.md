@@ -10,198 +10,172 @@
 [![Modalities](https://img.shields.io/badge/Modalities-ultrasound_+_clinical-0F766E?style=flat-square)](#multimodal-input-contract)
 [![Code](https://img.shields.io/badge/Code-public_utilities-2563EB?style=flat-square)](#public-utility-layer)
 
-<sub>multi-scale visual encoding · quality-aware dynamic attention · cardiac graph reasoning · Transformer fusion</sub>
+<sub>Multi-scale visual encoding · quality-aware attention · cardiac graph reasoning · Transformer integration</sub>
 
 </div>
 
-AMTDAN is a multimodal, multi-task research framework for five-level severity assessment across 17 cardiac conditions. It combines ultrasound-derived visual representations with 39 structured clinical measurements, then uses image-quality-aware attention, anatomical graph reasoning, and global Transformer integration to produce condition-specific severity probabilities.
+<p align="center">
+  <a href="#research-overview">Overview</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#reported-results">Results</a> ·
+  <a href="#evaluation-protocol">Evaluation</a> ·
+  <a href="#public-utility-layer">Code</a> ·
+  <a href="docs/FIGURES.md">Figures</a>
+</p>
 
-Developed in collaboration with **PLA General Hospital**, the project focuses on a problem that is broader than single-disease image classification. A cardiac examination can contain several coexisting abnormalities, each with an ordered severity scale and a different evidential basis. The system must preserve local image detail, account for examination quality, integrate quantitative clinical measurements, represent relationships among cardiac regions, and avoid allowing a well-represented task to dominate the remaining outputs.
+AMTDAN combines cardiac ultrasound representations with 39 structured clinical measurements to assess five-level severity across 17 cardiac conditions. Multi-scale visual features pass through quality-aware attention and cardiac-region graph encoding, then enter a Transformer integration module with condition-specific prediction heads.
 
-This repository is a **research preview**. It documents the system architecture, aggregate results, evaluation contract, failure-analysis framework, and a dependency-light public utility layer. It does not release patient data, private split manifests, trained weights, or the complete experimental implementation. Reported values describe the current research artifact and should not be interpreted as independently reproduced results.
+Developed in collaboration with **PLA General Hospital**, the project addresses examinations with coexisting abnormalities and different severity distributions. Its model design retains local image detail, quantitative measurements, anatomical relationships and task identity throughout the prediction pathway.
 
 ## At a glance
 
-<table align="center">
-  <tr align="center">
-    <th>Visual input</th><th>Clinical input</th><th>Prediction space</th><th>Core reasoning</th>
-  </tr>
-  <tr align="center">
-    <td>Cardiac ultrasound<br>representations</td>
-    <td><b>39</b> structured<br>measurements</td>
-    <td><b>17</b> conditions ×<br><b>5</b> severity levels</td>
-    <td>Dynamic attention · GCN<br>Transformer integration</td>
-  </tr>
-</table>
-
-<table align="center">
-  <tr align="center">
-    <th>Weighted precision</th><th>Weighted F1</th><th>AUC</th><th>Cohen's κ</th>
-  </tr>
-  <tr align="center">
-    <td><b>90.5 ± 0.4%</b></td><td><b>90.0 ± 0.4%</b></td><td><b>93.8%</b></td><td><b>0.88 ± 0.02</b></td>
-  </tr>
-</table>
+| Component | Specification |
+|:---|:---|
+| Visual modality | Cardiac ultrasound representations with view and quality information |
+| Clinical modality | 39 structured measurements in the model design |
+| Prediction space | 17 conditions, each with five ordered severity levels |
+| Integration | Multi-scale encoding, dynamic attention, graph propagation and Transformer blocks |
+| Public package | Examination contracts, task registries, modality gating and evaluation utilities |
 
 ## Research overview
 
-Cardiac ultrasound interpretation is intrinsically multimodal. Image appearance describes chamber morphology, wall motion, valve structure, and flow-related patterns. Quantitative measurements provide dimensions, velocities, gradients, functional indices, and pressure-related variables. Neither source is uniformly reliable in every examination: visual quality varies across views and devices, while structured variables may be missing, noisy, or only indirectly related to a particular disease.
+<p align="center">
+  <img src="assets/figures/study-overview.svg" width="100%" alt="AMTDAN workflow from ultrasound and clinical measurements to condition-specific severity probabilities"><br>
+  <sub>Figure 1. Model design linking ultrasound features and clinical measurements to 17 condition-specific severity distributions.</sub>
+</p>
 
-Severity assessment adds an ordinal constraint. Confusing adjacent grades is different from confusing a mild case with a severe case, yet a conventional categorical loss treats both errors as equally distant. The challenge becomes more complex when 17 conditions are predicted jointly. Some tasks share anatomical or physiologic information, while others require highly specific evidence. A useful model must exploit related tasks without collapsing their individual decision boundaries.
+Ultrasound describes morphology, motion and flow-related appearance. Structured measurements supply dimensions, velocities, gradients and functional indices. Their contributions vary with view quality, measurement availability and the condition being assessed. AMTDAN models these sources jointly while preserving a separate output distribution for every condition.
 
-AMTDAN is organized around this structure. A multi-scale visual encoder extracts patterns at several spatial resolutions. A dynamic-attention module modifies visual attention using an image-quality score. A graph-based branch represents predefined cardiac regions and their relationships while aligning structured clinical variables with regional embeddings. A global integration module then uses positional encoding and multi-head attention to combine local and global evidence before producing a five-class probability distribution for each condition.
-
-The framework is intended to support research on standardized severity assessment. It is not presented as a clinical device, and the public artifact is not sufficient for diagnostic use. Its value at the current stage is to make the model logic, evaluation requirements, privacy boundary, and future release gates explicit.
+Severity is ordered within each task. An adjacent-grade error and a distant-grade error carry different information, even when both count as categorical mistakes. The evaluation therefore includes severity distance and ordinal agreement alongside classification metrics.
 
 ## Task formulation
 
-For each examination, AMTDAN produces a condition-specific probability vector over five ordered severity levels:
+The five severity positions are **Mild → Mild–moderate → Moderate → Moderate–severe → Severe**. Each condition uses an ordered label registry with task-specific annotation definitions.
 
-1. **Mild**
-2. **Mild–moderate**
-3. **Moderate**
-4. **Moderate–severe**
-5. **Severe**
+For examination $i$, the intended model output is
 
-The label registry treats these classes as ordered values rather than arbitrary category names. Every task must define the same five-position output contract, but the clinical meaning and sample support of each severity level remain task-specific. Unknown labels are retained as unknown and are not replaced by a normal or mild category.
+$$
+\mathbf{P}_i \in [0,1]^{17 \times 5},
+\qquad
+\sum_{k=1}^{5} P_{i,t,k}=1,\quad t=1,\ldots,17.
+$$
 
-All 17 conditions are evaluated independently before aggregate summaries are formed. This prevents a high-support or easier task from masking poor performance elsewhere. The minimum result record for each condition includes class support, precision, recall, F1, discrimination, ordinal agreement, calibration, and a five-by-five confusion matrix.
-
-The model is multi-label at the examination level and ordinal within each task. One examination may contain several conditions simultaneously, and each condition receives its own severity distribution. The framework therefore differs from a single 85-class classifier: the task identity remains explicit, related conditions can share representations, and missing labels can be handled without redefining the complete output space.
+One examination can have labels for several conditions. Each condition retains its own probability vector and class support. Missing task labels are represented as `None` in the public examination record.
 
 ## Multimodal input contract
 
+<p align="center">
+  <img src="assets/figures/input-contract.svg" width="100%" alt="Public examination, modality-state and immutable task-registry interfaces"><br>
+  <sub>Figure 2. Typed interfaces implemented in <code>amtdan/datasets/schema.py</code>.</sub>
+</p>
+
 ### Visual representation
 
-The visual branch receives a versioned ultrasound representation with view and quality metadata. Images are resized and normalized according to the frozen preprocessing specification before entering the multi-scale encoder. View identity, device family, and quality information remain attached to the examination so that performance can later be stratified rather than averaged across heterogeneous acquisition conditions.
-
-The public contract does not prescribe redistribution of raw clinical images. Ultrasound, identifiers, and institution-specific metadata remain outside the repository. Future executable releases should use governed local data or explicitly de-identified synthetic fixtures while preserving the same schema.
+The model design uses normalized ultrasound representations with view and acquisition metadata. The public `ModalityState` contract records visual availability and an optional quality value between zero and one. Source images and visual encoder tensors belong to the experimental pipeline.
 
 ### Structured clinical representation
 
-The clinical branch receives 39 structured variables. Each variable must retain its name, unit, missingness state, and examination window. Normalization parameters are fitted on the training partition only. Missing measurements are represented explicitly and must never be replaced by undocumented constants that could be interpreted as physiologic values.
-
-The structured vector complements rather than duplicates the visual branch. It provides quantitative context that may be difficult to infer consistently from one image, while the visual representation preserves spatial patterns that are not fully summarized by tabular measurements.
+The model design uses 39 clinical measurements. In the public package, `clinical_features` is a named mapping of finite values or `None`. Field names, units and examination windows are defined by the study schema.
 
 ### Modality state and quality
 
-Every examination records whether visual and clinical modalities are available and, when applicable, a bounded image-quality score. At least one modality must be present. The public utility layer uses this state to compute normalized fusion weights: a missing branch receives zero weight, and a low-quality visual branch can be down-weighted without silently discarding it.
+At least one modality must be available. `ExaminationRecord` binds modality state, clinical features and severity labels to `patient_id`, `exam_id` and `site`. `TaskRegistry` holds 17 unique tasks, and each `TaskSpec` supplies five ordered label names. The registry and its label order retain their validated values after construction.
 
-This quality-aware policy is important for robustness. A model that assumes every ultrasound image is equally informative may become overconfident on poorly visualized anatomy. AMTDAN instead makes modality availability and visual quality part of the fusion contract so that their effects can be evaluated directly.
+The field definitions and study-level checks are described in [Data interface](docs/DATA_INTERFACE.md).
 
 ## Architecture
 
 <p align="center">
-  <img src="assets/architecture.png" alt="AMTDAN multimodal architecture"><br>
-  <sub>Figure 1. Multi-scale visual encoding, dynamic attention, cardiac graph reasoning, and global severity prediction.</sub>
+  <img src="assets/figures/method-architecture.svg" width="100%" alt="Detailed AMTDAN architecture with multi-scale convolution, quality-aware attention, graph encoding and Transformer prediction"><br>
+  <sub>Figure 3. The four model modules and their feature transformations.</sub>
 </p>
 
 ### 1. Multi-scale feature extraction
 
-The visual encoder processes the normalized ultrasound representation through parallel convolutional paths with different receptive fields. The illustrated 3×3, 5×5, and 7×7 branches capture fine boundaries, intermediate structures, and broader cardiac context. Batch normalization stabilizes the feature distributions, while scale and translation transformations support variation in anatomy and acquisition.
-
-The branch outputs are aligned and concatenated into a shared multi-scale feature map. This design avoids forcing one spatial resolution to represent every condition. Fine-scale features may be important for a localized structural change, whereas chamber-level remodeling or global function requires a wider receptive field.
+Parallel 3×3, 5×5 and 7×7 convolutional paths capture local boundaries, intermediate structures and wider cardiac context. Their normalized outputs are aligned and concatenated into a shared feature map.
 
 ### 2. Dynamic attention fusion
 
-Self-attention models relationships among visual locations by constructing query, key, and value representations. AMTDAN augments this attention map with an image-quality score. The quality branch summarizes the reliability of the current visual input and interpolates between learned attention and a more uniform allocation when quality is reduced.
-
-The resulting attention is dynamic in two senses: it depends on the content of the examination and on the estimated quality of the image. This helps prevent a small, high-response region in a poor-quality frame from dominating the complete representation. Multiple attended feature blocks are retained for subsequent regional reasoning and global fusion.
+Self-attention relates visual locations through query, key and value representations. The image-quality branch modulates the attention allocation between learned attention and a uniform component. The resulting features retain both examination content and image reliability for regional encoding.
 
 ### 3. Graph-based structural encoding
 
-The graph branch represents cardiac regions as nodes and anatomical or functional relationships as edges. An adjacency matrix defines which regions can exchange information, and normalized graph propagation aggregates neighboring evidence. Graph convolution therefore imposes a structured inductive bias: related cardiac regions communicate through an explicit topology rather than only through unconstrained dense layers.
-
-Structured clinical measurements are normalized, embedded, and projected to the graph feature dimension. The clinical embedding is concatenated with the regional graph representation to form a multimodal structural feature. This design connects quantitative measurements to an anatomy-aware latent space while preserving the missingness and modality information declared by the input contract.
+Cardiac regions form graph nodes, with anatomical or functional relationships represented by an adjacency matrix. Normalized graph propagation aggregates regional evidence. Clinical measurements are embedded, projected to the graph feature dimension and combined with the regional representation.
 
 ### 4. Global feature integration and prediction
 
-The fused regional representation is converted into an ordered feature sequence and combined with positional encoding. Multi-head attention and feed-forward blocks integrate information across regions, modalities, and tasks. The global feature is then mapped to five logits for each condition, followed by a softmax probability distribution over severity levels.
-
-Task-specific prediction heads retain the identity of all 17 conditions. Multi-task optimization allows shared visual, graph, and clinical representations to learn from correlated outcomes, while the separate heads preserve condition-specific class distributions. The final result for one examination is therefore a matrix of task-by-severity probabilities rather than a single diagnosis.
-
-## Model design principles
-
-1. **Multi-scale perception**: different receptive fields preserve both local structural detail and global cardiac context.
-2. **Quality-aware attention**: visual evidence is weighted according to examination content and image quality.
-3. **Anatomical structure**: graph propagation encodes relationships among cardiac regions instead of relying only on generic feature fusion.
-4. **Multimodal alignment**: clinical measurements are projected into the same representational space as graph-derived visual features.
-5. **Task-specific outputs**: every condition retains its own five-level probability distribution.
-6. **Ordinal evaluation**: adjacent-grade and distant-grade errors are distinguished during analysis.
-7. **Missing-modality transparency**: availability and quality states are explicit inputs to the fusion policy.
+The multimodal representation is vectorized and combined with positional encoding. Transformer attention and feed-forward blocks integrate regional information. Task-specific heads produce five logits per condition, followed by a condition-wise softmax.
 
 ## Reported results
 
-The current research artifact reports a weighted precision of 90.5 ± 0.4%, weighted F1 of 90.0 ± 0.4%, AUC of 93.8%, and Cohen's κ of 0.88 ± 0.02. These values summarize the multi-task experiment and should be read together with per-task support, severity distributions, calibration, and confusion matrices when the complete evaluation artifacts become available.
+The existing research artifact reports the following aggregate values.
 
-Weighted metrics emphasize tasks and classes with greater support. They are useful for summarizing the overall experiment but can underrepresent rare conditions or severity levels. Cohen's κ adds agreement information beyond raw accuracy, while task-level confusion matrices show whether errors are concentrated near the diagonal or span several severity grades.
+| Metric | Reported value |
+|:---|:---:|
+| Weighted precision | 90.5 ± 0.4% |
+| Weighted F1 | 90.0 ± 0.4% |
+| AUC | 93.8% |
+| Cohen's κ | 0.88 ± 0.02 |
 
 ### Severity error structure
 
-The preview figure presents representative confusion matrices for pulmonary regurgitation, pulmonary artery pressure, aortic regurgitation, and left-ventricular diastolic dysfunction. Diagonal concentration indicates exact-grade agreement, while off-diagonal cells reveal the direction and distance of misclassification.
-
-Pulmonary regurgitation is shown as a higher-performing task, with strong diagonal values across the five grades. Pulmonary artery pressure is presented as a more difficult task, with greater confusion between adjacent levels. Aortic regurgitation and diastolic dysfunction occupy an intermediate range. Across the examples, most visible errors remain near the diagonal, but this qualitative pattern must be confirmed for all 17 tasks using the frozen task-level result tables.
-
 <p align="center">
-  <img src="assets/results.png" alt="AMTDAN representative five-level confusion matrices"><br>
-  <sub>Figure 2. Representative severity confusion matrices illustrating task heterogeneity and adjacent-grade error.</sub>
+  <img src="assets/results.png" width="100%" alt="Existing five-level confusion-matrix panels for pulmonary regurgitation, pulmonary artery pressure, aortic regurgitation and left-ventricular diastolic dysfunction"><br>
+  <sub>Figure 4. Original confusion-matrix panels for PR, PAP, AR and LVDD.</sub>
 </p>
+
+The matrices retain the direction and grade distance of each error. Task-level class support and confusion matrices accompany pooled summaries so that common tasks and grades do not conceal errors in less frequent categories.
 
 ### How the metrics should be read
 
-Precision describes the reliability of assigned severity labels under the observed class distribution. F1 balances precision and recall but does not encode how far an incorrect grade lies from the reference. AUC evaluates discrimination over decision thresholds and should be reported by task and class. Cohen's κ measures agreement beyond chance but remains sensitive to prevalence and label distribution.
-
-For an ordinal problem, these measures should be complemented by mean absolute grade error, the proportion of predictions within one grade, quadratic-weighted κ, calibration error, and class-specific support. The public metric utilities implement these ordinal summaries so that future results can distinguish a near miss from a clinically distant error.
+Precision and F1 summarize categorical performance. AUC summarizes discrimination, while Cohen's κ quantifies agreement beyond chance. Mean absolute grade error, within-one-grade agreement and quadratic-weighted κ additionally describe the ordinal structure. Calibration is assessed separately from discrimination.
 
 ## Evaluation protocol
 
+<p align="center">
+  <img src="assets/figures/evaluation-protocol.svg" width="100%" alt="Patient-level partitioning before preprocessing, development-only fitting, held-out evaluation and task-aware reporting"><br>
+  <sub>Figure 5. Evaluation design with patient-level partitioning, a frozen pipeline and task-aware reporting.</sub>
+</p>
+
 ### Leakage-safe partitioning
 
-All examinations from one patient must remain in the same partition. The split is frozen before normalization, augmentation, feature extraction, architecture selection, threshold selection, or calibration. Repeated examinations are never divided across training and test sets. This rule prevents patient-specific anatomy or acquisition signatures from inflating generalization performance.
+Repeated examinations from the same patient remain in one partition. Patient splitting precedes preprocessing, augmentation and feature extraction. Normalization is fitted on training data, model selection uses the validation partition, and held-out evaluation applies the selected pipeline.
 
 ### Task-aware reporting
 
-Every condition is evaluated separately before computing macro and support-weighted summaries. The minimum report includes per-class precision and recall, task-level F1, ROC analysis, a full five-level confusion matrix, ordinal distance, quadratic-weighted κ, and calibration. Aggregate results must resolve to the same frozen checkpoint, task registry, and patient split.
+Each condition is evaluated before macro and support-weighted summaries are formed. Reports include class support, precision, recall, F1, discrimination, confusion matrices, ordinal distance, agreement and calibration. Estimates remain linked to the checkpoint, task registry and patient split used to produce them.
 
 ### Ablation design
 
-Ablations should remove one component at a time while preserving the split, preprocessing, optimization budget, and evaluation code. The planned comparisons isolate multi-scale extraction, quality-aware attention, graph reasoning, Transformer integration, and multi-task optimization. Variation across seeds or resamples should accompany point estimates.
+Comparisons isolate multi-scale encoding, quality-aware attention, graph reasoning, Transformer integration and multi-task optimization under the same patient split and evaluation code. Variation across seeds or resamples accompanies point estimates.
 
 ### Domain and quality stratification
 
-Performance should be stratified by site, device family, view, visual-quality grade, modality-availability pattern, condition, and severity when sample support permits. A high aggregate score can coexist with failure on low-quality images or a specific device domain. Calibration should be repeated within important deployment strata rather than assumed from the pooled cohort.
+Site, device family, view, quality grade, modality availability, condition and severity define the reporting strata. The protocol is detailed in [Evaluation protocol](docs/EVALUATION_PROTOCOL.md).
 
 ## Failure analysis
 
-AMTDAN uses an explicit error taxonomy so that different failure mechanisms are not merged into one metric:
+| Failure mode | Diagnostic view |
+|:---|:---|
+| Visual quality | Performance and confidence by view and quality grade |
+| Missing modality | Results by visual and clinical availability |
+| Ordinal disagreement | Confusion matrices, grade distance and within-one-grade agreement |
+| Domain shift | Site- and device-specific performance and calibration |
+| Task imbalance | Per-task and per-class support alongside pooled metrics |
 
-- **Visual-quality failure**: performance changes with image quality, view, or device family.
-- **Missing-modality failure**: predictions degrade when one branch is unavailable or poorly represented.
-- **Ordinal near miss**: the predicted grade is adjacent to the reference.
-- **Ordinal severe miss**: the prediction differs by several severity levels.
-- **Domain shift**: performance or calibration changes across sites or devices.
-- **Task imbalance**: rare conditions or severity levels have unstable recall and precision.
-
-High-confidence errors and distant-grade errors require case-level review. The review record should include task identity, full probability vector, modality state, visual-quality flags, graph or attention diagnostics when available, class support, and label-review status. Changes made after failure analysis must be evaluated on the original frozen split to avoid converting error inspection into test-set tuning.
+Case review retains task identity, probability vectors, modality state, quality information and annotation status. The [Failure analysis](docs/FAILURE_ANALYSIS.md) document defines the review record.
 
 ## Public utility layer
 
-The current repository includes tested, dependency-light components that make the future experimental release easier to audit:
-
-- validated multimodal examination records;
-- an immutable 17-task registry with five ordered labels per task;
-- explicit modality-availability and visual-quality states;
-- quality-aware fusion weights for visual and clinical embeddings;
-- accuracy, macro F1, grade-distance, within-one-grade, and quadratic-weighted κ metrics;
-- expected calibration error;
-- model-card, evaluation, data-interface, artifact-lineage, and failure-analysis documentation;
-- continuous integration for the public utilities.
-
-These components define interfaces and evaluation behavior. They are not the full AMTDAN training implementation and cannot reproduce the reported aggregate results without the withheld architecture, governed data, split manifests, and model artifacts.
+| Module | Implemented interfaces |
+|:---|:---|
+| [Dataset contracts](amtdan/datasets/schema.py) | `ExaminationRecord`, `ModalityState`, `TaskSpec`, `TaskRegistry` |
+| [Modality gating](amtdan/models/fusion.py) | `GateWeights`, `compute_gate`, `fuse_embeddings` |
+| [Evaluation](amtdan/evaluation/metrics.py) | `ordinal_metrics`, `expected_calibration_error` |
 
 ### Installation
 
-The public package requires Python 3.10 or later and has no runtime dependencies.
+Python 3.10 or later is required. The public package has no runtime dependencies.
 
 ```bash
 git clone https://github.com/ZhWenPrism/AMTDAN.git
@@ -219,67 +193,81 @@ print(metrics.accuracy)
 print(metrics.mean_absolute_grade_error)
 ```
 
-Run the public-utility tests from the repository root:
+Run the utility tests from the repository root:
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
+### Modality-gating response
+
+The public `compute_gate` function defines a normalized fusion policy. With both modalities available, visual quality $q$ and quality floor $\epsilon$ enter the visual score as
+
+$$
+s_v = e^{z_v-m}\max(q,\epsilon),\qquad
+s_c = e^{z_c-m},\qquad
+m=\max(z_v,z_c),
+$$
+
+$$
+w_v = \frac{s_v}{s_v+s_c},\qquad
+w_c = 1-w_v.
+$$
+
+When one modality is absent, the available branch receives weight one. Embedding fusion uses the resulting weights for vectors with a shared dimension.
+
+<p align="center">
+  <img src="assets/figures/fusion-policy.svg" width="100%" alt="Analytical visual-gate response to image quality and the three modality-availability states"><br>
+  <sub>Figure 6. Analytical outputs of <code>compute_gate</code>: logit gaps of −1, 0 and +1 with quality floor 0.05, and the equal-logit availability states.</sub>
+</p>
+
+These curves are calculated from the public function. The method's learned spatial-attention module is described separately in the architecture section. Source values and rendering details are in [Figure sources](docs/FIGURES.md).
+
 ## Repository layout
 
 ```text
 AMTDAN/
-├── assets/
-│   ├── architecture.png            # multimodal model architecture
-│   └── results.png                 # representative ordinal results
 ├── amtdan/
-│   ├── datasets/
-│   │   ├── schema.py               # examination, modality, and task contracts
-│   │   └── registry/               # planned task and label registries
-│   ├── models/
-│   │   ├── visual/                 # planned multi-scale visual encoder
-│   │   ├── attention/              # planned quality-aware attention
-│   │   ├── graph/                  # planned cardiac graph reasoning
-│   │   ├── transformer/            # planned global feature integration
-│   │   ├── heads/                  # planned 17 ordinal prediction heads
-│   │   └── fusion.py               # public modality-gating utility
-│   ├── training/
-│   │   ├── objectives/             # planned multi-task and ordinal losses
-│   │   ├── sampling/               # planned imbalance-aware sampling
-│   │   └── callbacks/              # planned checkpoint and audit hooks
-│   ├── evaluation/
-│   │   ├── metrics.py              # public ordinal and calibration metrics
-│   │   ├── stratification/         # planned quality and domain analyses
-│   │   └── reporting/              # planned task-level reports
-│   └── utils/                       # planned provenance and IO helpers
-├── configs/
-│   ├── data/                        # future cohort and preprocessing profiles
-│   ├── model/                       # future module configuration
-│   └── experiment/                  # future training and ablation protocols
-├── data/
-│   ├── synthetic/                   # future public schema fixtures only
-│   └── private/                     # local governed data; never committed
+│   ├── datasets/schema.py
+│   ├── models/fusion.py
+│   └── evaluation/metrics.py
+├── assets/
+│   ├── architecture.png
+│   ├── results.png
+│   └── figures/                     # SVG/PDF figures and analytical source tables
 ├── docs/
-│   ├── DATA_INTERFACE.md
-│   ├── EVALUATION_PROTOCOL.md
-│   ├── FAILURE_ANALYSIS.md
-│   ├── MODEL_CARD.md
-│   ├── ARTIFACT_MANIFEST.md
-│   └── RELEASE_SCOPE.md
-├── tests/
-│   └── unit/                        # executable public-utility tests
+├── scripts/                        # figure renderer and layout helpers
+├── tests/unit/
+├── requirements-figures.txt
 ├── pyproject.toml
 └── README.md
 ```
 
+## Figure sources
+
+The five added figures have editable SVG and PDF versions. The fusion-policy figure includes the values returned by `compute_gate`.
+
+```bash
+python -m pip install -r requirements-figures.txt
+python scripts/make_figures.py
+```
+
+The renderer writes SVG, PDF, 600 dpi PNG, source tables and a rendering manifest to `outputs/figures/`. The [figure catalogue](docs/FIGURES.md) links each figure to its source.
+
 ## Release status
 
-The architecture diagram and result figure are provided for transparent research communication. The public package currently validates data contracts, ordinal metrics, calibration summaries, and quality-aware fusion behavior. It does not include the complete visual encoder, graph network, Transformer stack, training loop, model weights, clinical data, private configurations, or patient-level predictions.
+| Component | Current state |
+|:---|:---|
+| Model architecture and original aggregate-result panel | Published |
+| Examination contracts, task registry, gating and evaluation utilities | Available in the public package |
+| Method, interface, protocol and analytical-gating figures | SVG/PDF assets with rendering source |
+| Full visual encoder, GCN, Transformer and training implementation | Pending full implementation release |
+| Clinical images, private split manifests and trained checkpoints | Outside the current public artifact |
 
-Future implementation release is gated on a frozen task registry, verified artifact lineage, reproducible task-level results, privacy and governance review, executable evaluation assets, and confirmation that no patient or institution-sensitive information is exposed. New public artifacts should be linked to a Git revision, schema version, configuration identity, and source-table hash.
+[Release scope](docs/RELEASE_SCOPE.md) describes the package contents. [Documentation](docs/README.md) provides the model card, input contract, evaluation protocol and artifact records.
 
-## Scope and responsible use
+<a id="scope-and-responsible-use"></a>
 
-The reported aggregate metrics do not establish portability across hospitals, devices, populations, or annotation practices.
+## Limitations
 
-Five-level labels may reflect local reporting conventions, and some tasks may have limited examples at the extreme grades. Visual quality, missing modalities, class imbalance, and domain shift can change both accuracy and calibration.
+Five-level labels depend on task definitions and local annotation practice. Image quality, missing modalities, class imbalance and site or device variation remain separate axes of evaluation. Aggregate values do not resolve performance within every task, severity level or acquisition domain.

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="835.2pt" height="360pt" viewBox="0 0 835.2 360" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-10-30T19:43:30.067857</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.8.4, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 360 
+L 835.2 360 
+L 835.2 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="patch_2">
+   <path d="M 2.88 357.12 
+L 832.32 357.12 
+L 832.32 2.88 
+L 2.88 2.88 
+z
+" style="fill: #ffffff; stroke: #b8b8b8; stroke-width: 0.75; stroke-linejoin: miter"/>
+  </g>
+  <g id="patch_3">
+   <path d="M 9.1008 21.24 
+L 826.0992 21.24 
+Q 830.2752 21.24 830.2752 19.44 
+L 830.2752 5.76 
+Q 830.2752 3.96 826.0992 3.96 
+L 9.1008 3.96 
+Q 4.9248 3.96 4.9248 5.76 
+L 4.9248 19.44 
+Q 4.9248 21.24 9.1008 21.24 
+z
+" style="fill: #eaeaea"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_4">
+    <path d="M 158.800649 200.88 
+Q 176.041672 200.88 192.052857 200.88 
+" clip-path="url(#p9fdf30cd84)" style="fill: none; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 187.252857 198.48 
+L 192.052857 200.88 
+L 187.252857 203.28 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #6d7c84; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 335.847722 197.288438 
+Q 356.761187 154.797589 377.131558 113.410167 
+" clip-path="url(#p9fdf30cd84)" style="fill: none; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 372.858579 116.656958 
+L 377.131558 113.410167 
+L 377.165204 118.776625 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #6d7c84; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 336.069207 204.353218 
+Q 356.761263 240.482205 376.842104 275.543992 
+" clip-path="url(#p9fdf30cd84)" style="fill: none; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 376.539178 270.185985 
+L 376.842104 275.543992 
+L 372.373943 272.571529 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #6d7c84; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 556.692517 276.804976 
+Q 582.118741 240.481798 606.8397 205.166143 
+" clip-path="url(#p9fdf30cd84)" style="fill: none; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 602.120924 207.722146 
+L 606.8397 205.166143 
+L 606.053237 210.474766 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #6d7c84; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 467.28 153.762605 
+Q 467.28 194.040135 467.28 233.087827 
+" clip-path="url(#p9fdf30cd84)" style="fill: none; stroke-dasharray: 4.07,1.76; stroke-dashoffset: 0; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+    <path d="M 469.68 228.287827 
+L 467.28 233.087827 
+L 464.88 228.287827 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #6d7c84; stroke-dasharray: 4.07,1.76; stroke-dashoffset: 0; stroke: #6d7c84; stroke-width: 1.1; stroke-linecap: round"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 23.4 242.28 
+L 150.84 242.28 
+Q 155.88 242.28 155.88 237.24 
+L 155.88 164.52 
+Q 155.88 159.48 150.84 159.48 
+L 23.4 159.48 
+Q 18.36 159.48 18.36 164.52 
+L 18.36 237.24 
+Q 18.36 242.28 23.4 242.28 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #edf3f7; stroke: #3f6d8c; stroke-width: 1.05; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 201.24 242.28 
+L 330.12 242.28 
+Q 335.16 242.28 335.16 237.24 
+L 335.16 164.52 
+Q 335.16 159.48 330.12 159.48 
+L 201.24 159.48 
+Q 196.2 159.48 196.2 164.52 
+L 196.2 237.24 
+Q 196.2 242.28 201.24 242.28 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #edf3f7; stroke: #3f6d8c; stroke-width: 1.05; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 383.4 150.84 
+L 550.44 150.84 
+Q 555.48 150.84 555.48 145.8 
+L 555.48 70.92 
+Q 555.48 65.88 550.44 65.88 
+L 383.4 65.88 
+Q 378.36 65.88 378.36 70.92 
+L 378.36 145.8 
+Q 378.36 150.84 383.4 150.84 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #edf5f2; stroke: #317a72; stroke-width: 1.05; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 383.4 322.2 
+L 550.44 322.2 
+Q 555.48 322.2 555.48 317.16 
+L 555.48 242.28 
+Q 555.48 237.24 550.44 237.24 
+L 383.4 237.24 
+Q 378.36 237.24 378.36 242.28 
+L 378.36 317.16 
+Q 378.36 322.2 383.4 322.2 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #edf5f2; stroke: #317a72; stroke-width: 1.05; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 613.8 261.72 
+L 805.32 261.72 
+Q 810.36 261.72 810.36 256.68 
+L 810.36 144.36 
+Q 810.36 139.32 805.32 139.32 
+L 613.8 139.32 
+Q 608.76 139.32 608.76 144.36 
+L 608.76 256.68 
+Q 608.76 261.72 613.8 261.72 
+z
+" clip-path="url(#p9fdf30cd84)" style="fill: #fbf3e7; stroke: #aa7836; stroke-width: 1.05; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="fill: #23343d; font: 700 11.2px 'Arial'; text-anchor: middle" x="87.12" y="189.26805" transform="rotate(-0 87.12 189.26805)">Examinations</text>
+   </g>
+   <g id="text_2">
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(37.481016 213.592119)">Group repeated studies</text>
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(66.523555 225.340131)">by patient</text>
+   </g>
+   <g id="text_3">
+    <text style="fill: #23343d; font: 700 11.2px 'Arial'; text-anchor: middle" x="265.68" y="189.26805" transform="rotate(-0 265.68 189.26805)">Patient split</text>
+   </g>
+   <g id="text_4">
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(232.680859 213.450287)">Freeze partition</text>
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(239.540898 225.366182)">before fitting</text>
+   </g>
+   <g id="text_5">
+    <text style="fill: #23343d; font: 700 11.2px 'Arial'; text-anchor: middle" x="466.92" y="96.35925" transform="rotate(-0 466.92 96.35925)">Development</text>
+   </g>
+   <g id="text_6">
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(396.427031 121.446229)">Fit preprocessing on training data</text>
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(400.909102 133.305568)">Select model on validation data</text>
+   </g>
+   <g id="text_7">
+    <text style="fill: #23343d; font: 700 11.2px 'Arial'; text-anchor: middle" x="466.92" y="267.71925" transform="rotate(-0 466.92 267.71925)">Held-out evaluation</text>
+   </g>
+   <g id="text_8">
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(409.364844 292.864119)">Apply frozen preprocessing</text>
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(425.729336 304.723459)">and selected model</text>
+   </g>
+   <g id="text_9">
+    <text style="fill: #23343d; font: 700 11.2px 'Arial'; text-anchor: middle" x="709.56" y="181.78005" transform="rotate(-0 709.56 181.78005)">Task-aware report</text>
+   </g>
+   <g id="text_10">
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(665.214297 215.103699)">Precision / recall / F1</text>
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(656.883984 227.028203)">Ordinal distance + kappa</text>
+    <text style="fill: #23343d; font: 9.5px 'Arial'" transform="translate(653.458047 238.944098)">Calibration + class support</text>
+   </g>
+   <g id="text_11">
+    <text style="fill: #6d7c84; font: 9.4px 'Arial'; text-anchor: start" x="486.72" y="196.830047" transform="rotate(-0 486.72 196.830047)">Freeze pipeline</text>
+   </g>
+   <g id="text_12">
+    <text style="fill: #6d7c84; font: 9.4px 'Arial'" transform="translate(662.183844 297.141415)">Stratify by site, device,</text>
+    <text style="fill: #6d7c84; font: 9.4px 'Arial'" transform="translate(656.167844 308.203085)">quality and modality state</text>
+   </g>
+  </g>
+  <g id="text_13">
+   <text style="fill: #202020; font: 9.5px 'Arial'; text-anchor: middle" x="417.6" y="15.058125" transform="rotate(-0 417.6 15.058125)">Evaluation protocol: patient-level separation and frozen reporting</text>
+  </g>
+  <g id="text_14">
+   <text style="font: 700 11px 'Arial'; text-anchor: start" x="10.08" y="15.451406" transform="rotate(-0 10.08 15.451406)">c</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p9fdf30cd84">
+   <rect x="15.84" y="41.76" width="803.52" height="303.84"/>
+  </clipPath>
+ </defs>
+</svg>

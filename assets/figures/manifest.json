@@ -1,0 +1,84 @@
+{
+  "renderer": "scripts/make_figures.py",
+  "python": "3.12.4",
+  "packages": {
+    "matplotlib": "3.8.4",
+    "numpy": "1.26.4",
+    "pandas": "2.2.2"
+  },
+  "style_source": "scripts/figure_style.py",
+  "quality_floor": 0.05,
+  "logit_gaps": [
+    -1.0,
+    0.0,
+    1.0
+  ],
+  "data_sha256": {
+    "fusion-policy_data_availability.csv": "a6e8393b20dab8ebd5a02c20e788f11ead3fd2a80b33e6d2fc5a67ee8e54c6fa",
+    "fusion-policy_data_quality.csv": "39241c9593541b6f2e8ad7cbbb435ea0482213daa1110e9e344efbdae1bb073f"
+  },
+  "figures": [
+    {
+      "name": "study-overview",
+      "exports": [
+        "study-overview.svg",
+        "study-overview.pdf"
+      ],
+      "fonts": [
+        "Arial-BoldMT",
+        "ArialMT"
+      ],
+      "layout_issues": 0
+    },
+    {
+      "name": "method-architecture",
+      "exports": [
+        "method-architecture.svg",
+        "method-architecture.pdf"
+      ],
+      "fonts": [
+        "Arial-BoldMT",
+        "ArialMT"
+      ],
+      "layout_issues": 0
+    },
+    {
+      "name": "input-contract",
+      "exports": [
+        "input-contract.svg",
+        "input-contract.pdf"
+      ],
+      "fonts": [
+        "Arial-BoldMT",
+        "ArialMT"
+      ],
+      "layout_issues": 0
+    },
+    {
+      "name": "evaluation-protocol",
+      "exports": [
+        "evaluation-protocol.svg",
+        "evaluation-protocol.pdf"
+      ],
+      "fonts": [
+        "Arial-BoldMT",
+        "ArialMT"
+      ],
+      "layout_issues": 0
+    },
+    {
+      "name": "fusion-policy",
+      "exports": [
+        "fusion-policy.svg",
+        "fusion-policy.pdf",
+        "fusion-policy_data_quality.csv",
+        "fusion-policy_data_availability.csv"
+      ],
+      "fonts": [
+        "Arial-BoldMT",
+        "ArialMT"
+      ],
+      "layout_issues": 0
+    }
+  ]
+}
