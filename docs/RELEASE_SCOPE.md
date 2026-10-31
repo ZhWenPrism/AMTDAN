@@ -1,26 +1,25 @@
-# Release scope
+# Research preview scope
 
-AMTDAN is maintained as a research preview with a public utility package.
+AMTDAN is presented as a research preview. The repository documents the intended system design and preliminary evaluation while keeping implementation and restricted data outside the public release.
 
-## Public contents
+## Public artifacts
 
-| Artifact | Location |
-|:---|:---|
-| Model overview and reported aggregate values | `README.md` |
-| Original architecture and confusion-matrix figures | `assets/architecture.png`, `assets/results.png` |
-| Method, interface, protocol and gating figures | `assets/figures/` |
-| Examination and task contracts | `amtdan/datasets/schema.py` |
-| Modality weights and embedding fusion | `amtdan/models/fusion.py` |
-| Ordinal metrics and calibration error | `amtdan/evaluation/metrics.py` |
-| Utility regression tests | `tests/unit/` |
-| Figure renderer and analytical tables | `scripts/make_figures.py`, `assets/figures/*_data*.csv` |
+- Project overview and model architecture
+- Publication-safe result figures
+- Planned package layout
+- Contribution and release-boundary guidance
 
-## Full implementation release
+## Excluded artifacts
 
-The multi-scale visual encoder, learned spatial attention, cardiac GCN, Transformer and training pipeline remain part of the model design. Their complete experimental implementation and trained weights are pending release.
+- Patient-level ultrasound or clinical data
+- Identifiers and private split manifests
+- Model checkpoints and experiment logs
+- Implementation code pending release review
 
-Clinical images, patient-level records and private split manifests are outside the current public artifact.
+## Future release gates
 
-## Release records
-
-A full experimental release is linked to the task registry, model configuration, patient split and task-level evaluation tables described in [ARTIFACT_MANIFEST.md](ARTIFACT_MANIFEST.md). The current figure sources are listed in [FIGURES.md](FIGURES.md).
+1. Freeze the task and label specification.
+2. Verify data provenance and privacy controls.
+3. Reproduce all reported metrics from immutable split manifests.
+4. Add tests for data schemas, model outputs, and evaluation metrics.
+5. Publish implementation only after manuscript and governance review.
