@@ -29,6 +29,7 @@ class TaskSpec:
     severity_labels: tuple[str, ...]
 
     def __post_init__(self) -> None:
+        object.__setattr__(self, "severity_labels", tuple(self.severity_labels))
         if not self.name.strip():
             raise ValueError("task name must not be empty")
         if len(self.severity_labels) != 5 or len(set(self.severity_labels)) != 5:
@@ -40,6 +41,7 @@ class TaskRegistry:
     tasks: tuple[TaskSpec, ...]
 
     def __post_init__(self) -> None:
+        object.__setattr__(self, "tasks", tuple(self.tasks))
         names = [task.name for task in self.tasks]
         if len(names) != 17 or len(set(names)) != 17:
             raise ValueError("AMTDAN requires exactly 17 unique tasks")
