@@ -4,12 +4,17 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import isfinite
+from numbers import Integral
 from typing import Iterable, Sequence
 
 
 def _labels(values: Iterable[int], classes: int) -> tuple[int, ...]:
+    if isinstance(classes, bool) or not isinstance(classes, Integral) or classes < 2:
+        raise ValueError("classes must be an integer of at least two")
     result = tuple(values)
-    if not result or any(value not in range(classes) for value in result):
+    if not result or any(
+        not isinstance(value, Integral) or value not in range(classes) for value in result
+    ):
         raise ValueError(f"labels must be non-empty integers in [0, {classes - 1}]")
     return result
 
