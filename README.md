@@ -14,11 +14,13 @@
 
 </div>
 
+[Architecture](#architecture) · [Results](#reported-results) · [Paper figures](docs/PAPER_FIGURES.md) · [Installation](#installation)
+
 AMTDAN is a multimodal, multi-task research framework for five-level severity assessment across 17 cardiac conditions. It combines ultrasound-derived visual representations with 39 structured clinical measurements, then uses image-quality-aware attention, anatomical graph reasoning, and global Transformer integration to produce condition-specific severity probabilities.
 
 Developed in collaboration with **PLA General Hospital**, the project focuses on a problem that is broader than single-disease image classification. A cardiac examination can contain several coexisting abnormalities, each with an ordered severity scale and a different evidential basis. The system must preserve local image detail, account for examination quality, integrate quantitative clinical measurements, represent relationships among cardiac regions, and avoid allowing a well-represented task to dominate the remaining outputs.
 
-This repository is a **research preview**. It documents the system architecture, aggregate results, evaluation contract, failure-analysis framework, and a dependency-light public utility layer. It does not release patient data, private split manifests, trained weights, or the complete experimental implementation. Reported values describe the current research artifact and should not be interpreted as independently reproduced results.
+The public package contains multimodal data contracts, quality-aware fusion utilities, ordinal metrics, and calibration summaries. The complete training pipeline and trained weights are not included.
 
 ## At a glance
 
@@ -51,8 +53,6 @@ Severity assessment adds an ordinal constraint. Confusing adjacent grades is dif
 
 AMTDAN is organized around this structure. A multi-scale visual encoder extracts patterns at several spatial resolutions. A dynamic-attention module modifies visual attention using an image-quality score. A graph-based branch represents predefined cardiac regions and their relationships while aligning structured clinical variables with regional embeddings. A global integration module then uses positional encoding and multi-head attention to combine local and global evidence before producing a five-class probability distribution for each condition.
 
-The framework is intended to support research on standardized severity assessment. It is not presented as a clinical device, and the public artifact is not sufficient for diagnostic use. Its value at the current stage is to make the model logic, evaluation requirements, privacy boundary, and future release gates explicit.
-
 ## Task formulation
 
 For each examination, AMTDAN produces a condition-specific probability vector over five ordered severity levels:
@@ -77,6 +77,11 @@ The visual branch receives a versioned ultrasound representation with view and q
 
 The public contract does not prescribe redistribution of raw clinical images. Ultrasound, identifiers, and institution-specific metadata remain outside the repository. Future executable releases should use governed local data or explicitly de-identified synthetic fixtures while preserving the same schema.
 
+<p align="center">
+  <a href="assets/paper/fig05-annotations.png"><img src="assets/paper/fig05-annotations.png" alt="Manuscript Fig 5: cardiac chamber and blood-flow annotations" width="960"></a><br>
+  <sub>Fig 5. Cardiac chamber and blood-flow annotations.</sub>
+</p>
+
 ### Structured clinical representation
 
 The clinical branch receives 39 structured variables. Each variable must retain its name, unit, missingness state, and examination window. Normalization parameters are fitted on the training partition only. Missing measurements are represented explicitly and must never be replaced by undocumented constants that could be interpreted as physiologic values.
@@ -93,7 +98,7 @@ This quality-aware policy is important for robustness. A model that assumes ever
 
 <p align="center">
   <img src="assets/architecture.png" alt="AMTDAN multimodal architecture"><br>
-  <sub>Figure 1. Multi-scale visual encoding, dynamic attention, cardiac graph reasoning, and global severity prediction.</sub>
+  <sub>Fig 2. Multi-scale visual encoding, dynamic attention, cardiac graph reasoning, and global severity prediction.</sub>
 </p>
 
 ### 1. Multi-scale feature extraction
@@ -136,6 +141,13 @@ The current research artifact reports a weighted precision of 90.5 ± 0.4%, weig
 
 Weighted metrics emphasize tasks and classes with greater support. They are useful for summarizing the overall experiment but can underrepresent rare conditions or severity levels. Cohen's κ adds agreement information beyond raw accuracy, while task-level confusion matrices show whether errors are concentrated near the diagonal or span several severity grades.
 
+### Model comparison
+
+<p align="center">
+  <a href="assets/paper/fig16-model-comparison.png"><img src="assets/paper/fig16-model-comparison.png" alt="Manuscript Fig 16: model performance and parameter-efficiency comparison" width="960"></a><br>
+  <sub>Fig 16. Model performance and efficiency.</sub>
+</p>
+
 ### Severity error structure
 
 The preview figure presents representative confusion matrices for pulmonary regurgitation, pulmonary artery pressure, aortic regurgitation, and left-ventricular diastolic dysfunction. Diagonal concentration indicates exact-grade agreement, while off-diagonal cells reveal the direction and distance of misclassification.
@@ -144,8 +156,22 @@ Pulmonary regurgitation is shown as a higher-performing task, with strong diagon
 
 <p align="center">
   <img src="assets/results.png" alt="AMTDAN representative five-level confusion matrices"><br>
-  <sub>Figure 2. Representative severity confusion matrices illustrating task heterogeneity and adjacent-grade error.</sub>
+  <sub>Fig 13. Representative severity confusion matrices illustrating task heterogeneity and adjacent-grade error.</sub>
 </p>
+
+### Attention and robustness
+
+<p align="center">
+  <a href="assets/paper/fig14-attention.png"><img src="assets/paper/fig14-attention.png" alt="Manuscript Fig 14: disease-specific attention distributions" width="800"></a><br>
+  <sub>Fig 14. Disease-specific attention distributions.</sub>
+</p>
+
+<p align="center">
+  <a href="assets/paper/fig17-robustness.png"><img src="assets/paper/fig17-robustness.png" alt="Manuscript Fig 17: model comparison across robustness test conditions" width="800"></a><br>
+  <sub>Fig 17. Model comparison across robustness test conditions.</sub>
+</p>
+
+[Browse the paper figures](docs/PAPER_FIGURES.md) for severity distributions, training curves, multiclass and binary ROC curves, and inter-disease knowledge transfer.
 
 ### How the metrics should be read
 
@@ -231,7 +257,8 @@ python -m unittest discover -s tests -v
 AMTDAN/
 ├── assets/
 │   ├── architecture.png            # multimodal model architecture
-│   └── results.png                 # representative ordinal results
+│   ├── results.png                 # representative ordinal results
+│   └── paper/                      # manuscript figures
 ├── amtdan/
 │   ├── datasets/
 │   │   ├── schema.py               # examination, modality, and task contracts
@@ -260,6 +287,7 @@ AMTDAN/
 │   ├── synthetic/                   # future public schema fixtures only
 │   └── private/                     # local governed data; never committed
 ├── docs/
+│   ├── PAPER_FIGURES.md
 │   ├── DATA_INTERFACE.md
 │   ├── EVALUATION_PROTOCOL.md
 │   ├── FAILURE_ANALYSIS.md

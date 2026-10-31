@@ -4,6 +4,7 @@ Technical notes for the AMTDAN research-preview repository.
 
 | Document | Purpose |
 |:---|:---|
+| [Paper figures](PAPER_FIGURES.md) | Architecture, annotations, learning curves, ROC curves, attention, and model comparisons |
 | [Model card](MODEL_CARD.md) | Summarizes intended use, current scope, limitations, and privacy boundary |
 | [Data interface](DATA_INTERFACE.md) | Defines multimodal examination records and the 17-task label registry |
 | [Experiment record](EXPERIMENT_RECORD.md) | Captures module, loss, split, and environment settings |

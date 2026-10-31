@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "manuscript": {
+    "title": "AMTDAN: Automated classification of cardiac disease severity using ultrasound imaging and clinical data",
+    "filename": "[manuscript] clean.docx",
+    "sha256": "b6668b41d6c4fcc0bf27167c0ba1ae1a6ab0632808fb13fc7dbeade301d7aa9d"
+  },
+  "figures": [
+    {
+      "figure_number": 5,
+      "file": "fig05-annotations.png",
+      "source_member": "word/media/image5.png",
+      "width": 3780,
+      "height": 1010,
+      "bytes": 1459682,
+      "sha256": "ed283ad600e9bf97fbadbf0eea33524e8fa7898f601a3b0270e4ea3935c3fd05",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 6,
+      "file": "fig06-severity-distributions.png",
+      "source_member": "word/media/image6.png",
+      "width": 1599,
+      "height": 1954,
+      "bytes": 1139057,
+      "sha256": "97f307a2da10ad695fb9cf2d67bbb0fa24adc8391f9c624eb77ddfe3afec20e0",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 7,
+      "file": "fig07-multiclass-training.png",
+      "source_member": "word/media/image87.png",
+      "width": 1044,
+      "height": 694,
+      "bytes": 329321,
+      "sha256": "0392ff0aa30adf3e500f5e812059ff0383d6000205c1aef54e2cd220019594ee",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 8,
+      "file": "fig08-binary-training.png",
+      "source_member": "word/media/image88.png",
+      "width": 1028,
+      "height": 669,
+      "bytes": 213075,
+      "sha256": "59bd601c7e427918f8c79d4d3fa858afc3273bf49b3b3d9ee2b049a62db2f54a",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 11,
+      "file": "fig11-multiclass-roc.png",
+      "source_member": "word/media/image91.png",
+      "width": 1341,
+      "height": 671,
+      "bytes": 161984,
+      "sha256": "fdcb46317472bb2aee0a8cec7b4d88073668653acaa1c10031402f668590e479",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 12,
+      "file": "fig12-binary-roc.png",
+      "source_member": "word/media/image92.png",
+      "width": 4725,
+      "height": 4488,
+      "bytes": 8735853,
+      "sha256": "81affad69d4b1ce819b4366698f5deb20e68f8f5dbcd2f683ef04acbb3d51b09",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 14,
+      "file": "fig14-attention.png",
+      "source_member": "word/media/image94.png",
+      "width": 4297,
+      "height": 3017,
+      "bytes": 593544,
+      "sha256": "efd00bf60fb3ff323e0efc9491c71aca9f293de74438740abe8eed4ee93644cf",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 15,
+      "file": "fig15-knowledge-transfer.png",
+      "source_member": "word/media/image95.png",
+      "width": 1382,
+      "height": 1305,
+      "bytes": 239647,
+      "sha256": "7cf0f0c1c6d40cefce51339e3fcebc54e40735f9f529dade559d299ff6b59ba2",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 16,
+      "file": "fig16-model-comparison.png",
+      "source_member": "word/media/image97.png",
+      "width": 1717,
+      "height": 934,
+      "bytes": 240942,
+      "sha256": "ddefd1014b0e74ff69e9cd5b07ef3baf4489d47488b3cca0db04d5cbc11d9119",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    },
+    {
+      "figure_number": 17,
+      "file": "fig17-robustness.png",
+      "source_member": "word/media/image98.png",
+      "width": 1049,
+      "height": 900,
+      "bytes": 175923,
+      "sha256": "43a1614228470db4231137e0ced07789e9168f056aa6effcd8c42ab03e8ab715",
+      "source_table_sha256": null,
+      "rendering_revision": null
+    }
+  ]
+}
