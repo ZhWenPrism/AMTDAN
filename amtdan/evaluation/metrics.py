@@ -76,8 +76,13 @@ def ordinal_metrics(y_true: Iterable[int], y_pred: Iterable[int], classes: int =
 def expected_calibration_error(
     correctness: Sequence[bool | int], confidence: Sequence[float], bins: int = 10
 ) -> float:
+    correctness, confidence = tuple(correctness), tuple(confidence)
     if not correctness or len(correctness) != len(confidence):
         raise ValueError("correctness and confidence must be non-empty and aligned")
+    if any(value not in (0, 1) for value in correctness):
+        raise ValueError("correctness must contain only binary values")
+    if isinstance(bins, bool) or not isinstance(bins, Integral):
+        raise ValueError("bins must be a positive integer")
     if bins <= 0 or any(not isfinite(value) or not 0 <= value <= 1 for value in confidence):
         raise ValueError("bins must be positive and confidence must lie in [0, 1]")
     total, result = len(confidence), 0.0
