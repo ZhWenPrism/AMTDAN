@@ -16,7 +16,7 @@ def _labels(values: Iterable[int], classes: int) -> tuple[int, ...]:
         not isinstance(value, Integral) or value not in range(classes) for value in result
     ):
         raise ValueError(f"labels must be non-empty integers in [0, {classes - 1}]")
-    return result
+    return tuple(int(value) for value in result)
 
 
 @dataclass(frozen=True, slots=True)
