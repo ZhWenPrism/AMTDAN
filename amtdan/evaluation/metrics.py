@@ -13,7 +13,8 @@ def _labels(values: Iterable[int], classes: int) -> tuple[int, ...]:
         raise ValueError("classes must be an integer of at least two")
     result = tuple(values)
     if not result or any(
-        not isinstance(value, Integral) or value not in range(classes) for value in result
+        isinstance(value, bool) or not isinstance(value, Integral) or value not in range(classes)
+        for value in result
     ):
         raise ValueError(f"labels must be non-empty integers in [0, {classes - 1}]")
     return tuple(int(value) for value in result)

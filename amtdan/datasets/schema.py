@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from math import isfinite
+from numbers import Integral
 from types import MappingProxyType
 from typing import Mapping
 
@@ -74,9 +75,11 @@ class ExaminationRecord:
             features[name] = value
         labels: dict[str, int | None] = {}
         for task, label in self.severity_labels.items():
-            if not task.strip() or (label is not None and label not in range(5)):
+            if not task.strip() or (label is not None and (
+                isinstance(label, bool) or not isinstance(label, Integral) or label not in range(5)
+            )):
                 raise ValueError("severity labels must be integers from 0 to 4 or None")
-            labels[task] = label
+            labels[task] = None if label is None else int(label)
         object.__setattr__(self, "clinical_features", MappingProxyType(features))
         object.__setattr__(self, "severity_labels", MappingProxyType(labels))
 
