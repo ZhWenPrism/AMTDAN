@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from bisect import bisect_right
 from dataclasses import dataclass
 from math import isfinite
 from numbers import Integral
@@ -13,7 +14,8 @@ def _labels(values: Iterable[int], classes: int) -> tuple[int, ...]:
         raise ValueError("classes must be an integer of at least two")
     result = tuple(values)
     if not result or any(
-        not isinstance(value, Integral) or value not in range(classes) for value in result
+        isinstance(value, bool) or not isinstance(value, Integral) or value not in range(classes)
+        for value in result
     ):
         raise ValueError(f"labels must be non-empty integers in [0, {classes - 1}]")
     return tuple(int(value) for value in result)
@@ -85,12 +87,14 @@ def expected_calibration_error(
         raise ValueError("bins must be a positive integer")
     if bins <= 0 or any(not isfinite(value) or not 0 <= value <= 1 for value in confidence):
         raise ValueError("bins must be positive and confidence must lie in [0, 1]")
-    total, result = len(confidence), 0.0
-    for index in range(bins):
-        low, high = index / bins, (index + 1) / bins
-        members = [i for i, value in enumerate(confidence) if low <= value <= high if index == bins - 1 or value < high]
-        if members:
-            accuracy = sum(bool(correctness[i]) for i in members) / len(members)
-            mean_confidence = sum(confidence[i] for i in members) / len(members)
-            result += len(members) / total * abs(accuracy - mean_confidence)
-    return result
+    edges = [index / bins for index in range(1, bins)]
+    counts, correct, confidence_sums = [0] * bins, [0] * bins, [0] * bins
+    for hit, value in zip(correctness, confidence):
+        index = bisect_right(edges, value)
+        counts[index] += 1
+        correct[index] += bool(hit)
+        confidence_sums[index] += value
+    return sum(
+        count / len(confidence) * abs(hits / count - total / count)
+        for count, hits, total in zip(counts, correct, confidence_sums) if count
+    )
