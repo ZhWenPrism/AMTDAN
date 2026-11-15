@@ -28,6 +28,7 @@ def compute_gate(
     *,
     quality_floor: float = 0.05,
 ) -> GateWeights:
+    visual_logit, clinical_logit, quality_floor = map(float, (visual_logit, clinical_logit, quality_floor))
     if not all(isfinite(value) for value in (visual_logit, clinical_logit, quality_floor)):
         raise ValueError("gate inputs must be finite")
     if not 0 < quality_floor <= 1:
@@ -36,9 +37,10 @@ def compute_gate(
         return GateWeights(1.0, 0.0)
     if state.clinical_available and not state.visual_available:
         return GateWeights(0.0, 1.0)
-    quality = state.visual_quality if state.visual_quality is not None else 1.0
-    visual_score = exp(visual_logit - max(visual_logit, clinical_logit)) * max(quality, quality_floor)
-    clinical_score = exp(clinical_logit - max(visual_logit, clinical_logit))
+    quality = float(state.visual_quality) if state.visual_quality is not None else 1.0
+    centre = max(visual_logit, clinical_logit)
+    visual_score = exp(visual_logit - centre) * max(quality, quality_floor)
+    clinical_score = exp(clinical_logit - centre)
     total = visual_score + clinical_score
     return GateWeights(visual_score / total, clinical_score / total)
 
