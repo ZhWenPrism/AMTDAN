@@ -33,8 +33,10 @@ class TaskSpec:
         object.__setattr__(self, "severity_labels", tuple(self.severity_labels))
         if not self.name.strip():
             raise ValueError("task name must not be empty")
-        if len(self.severity_labels) != 5 or len(set(self.severity_labels)) != 5:
-            raise ValueError("each task requires five unique ordered severity labels")
+        if (len(self.severity_labels) != 5
+                or any(not isinstance(label, str) or not label.strip() for label in self.severity_labels)
+                or len({label.strip() for label in self.severity_labels}) != 5):
+            raise ValueError("each task requires five unique non-empty ordered severity labels")
 
 
 @dataclass(frozen=True, slots=True)
