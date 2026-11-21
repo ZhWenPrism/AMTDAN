@@ -15,6 +15,8 @@ class GateWeights:
     clinical: float
 
     def __post_init__(self) -> None:
+        object.__setattr__(self, "visual", float(self.visual))
+        object.__setattr__(self, "clinical", float(self.clinical))
         if any(not isfinite(value) or value < 0 for value in (self.visual, self.clinical)):
             raise ValueError("gate weights must be finite and non-negative")
         if abs(self.visual + self.clinical - 1.0) > 1e-9:
@@ -48,7 +50,7 @@ def compute_gate(
 def _vector(values: Sequence[float] | None, name: str) -> tuple[float, ...] | None:
     if values is None:
         return None
-    result = tuple(values)
+    result = tuple(map(float, values))
     if not result or any(not isfinite(value) for value in result):
         raise ValueError(f"{name} must contain finite values")
     return result
