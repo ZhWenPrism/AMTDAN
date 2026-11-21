@@ -16,6 +16,8 @@ class ModalityState:
     visual_quality: float | None = None
 
     def __post_init__(self) -> None:
+        if not isinstance(self.visual_available, bool) or not isinstance(self.clinical_available, bool):
+            raise ValueError("modality availability flags must be boolean")
         if not self.visual_available and not self.clinical_available:
             raise ValueError("at least one modality must be available")
         if self.visual_quality is not None and (
