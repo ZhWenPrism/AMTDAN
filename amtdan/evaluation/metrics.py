@@ -87,6 +87,7 @@ def expected_calibration_error(
         raise ValueError("bins must be a positive integer")
     if bins <= 0 or any(not isfinite(value) or not 0 <= value <= 1 for value in confidence):
         raise ValueError("bins must be positive and confidence must lie in [0, 1]")
+    confidence = tuple(map(float, confidence))
     edges = [index / bins for index in range(1, bins)]
     counts, correct, confidence_sums = [0] * bins, [0] * bins, [0] * bins
     for hit, value in zip(correctness, confidence):
