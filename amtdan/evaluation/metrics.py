@@ -88,14 +88,12 @@ def expected_calibration_error(
     if bins <= 0 or any(not isfinite(value) or not 0 <= value <= 1 for value in confidence):
         raise ValueError("bins must be positive and confidence must lie in [0, 1]")
     confidence = tuple(map(float, confidence))
-    edges = [index / bins for index in range(1, bins)]
-    counts, correct, confidence_sums = [0] * bins, [0] * bins, [0] * bins
+    occupied = {}
     for hit, value in zip(correctness, confidence):
-        index = bisect_right(edges, value)
-        counts[index] += 1
-        correct[index] += bool(hit)
-        confidence_sums[index] += value
+        index = bisect_right(range(1, bins), value, key=lambda edge: edge / bins)
+        count, hits, total = occupied.get(index, (0, 0, 0.0))
+        occupied[index] = count + 1, hits + bool(hit), total + value
     return sum(
         count / len(confidence) * abs(hits / count - total / count)
-        for count, hits, total in zip(counts, correct, confidence_sums) if count
+        for count, hits, total in (occupied[index] for index in sorted(occupied))
     )
